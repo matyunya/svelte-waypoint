@@ -16,7 +16,7 @@ npm install svelte-waypoint --save
 
 ```
 <script>
-import Waypoint from 'svelte-waypoint';
+  import Waypoint from 'svelte-waypoint';
 </script>
 
 /*
@@ -24,7 +24,7 @@ import Waypoint from 'svelte-waypoint';
   200 pixels above the element's top border. 
 */
 <Waypoint throttle="500" offset="200">
-  <MyComponent/>
+  <MyComponent />
 </Waypoint>
 ```
 
