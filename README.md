@@ -1,5 +1,5 @@
 # svelte-waypoint
-Lazyload images or anything component for Svelte as simple as
+Lazyload images or anything in Svelte and Sapper.
 
 ### Install
 
