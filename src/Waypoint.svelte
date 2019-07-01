@@ -1,6 +1,8 @@
 <script>
 export let offset = 0;
 export let throttle = 250;
+export let c = '';
+export let style = '';
 
 let visible = false;
 
@@ -63,7 +65,13 @@ function waypoint(node) {
 
 </script>
 
-<div use:waypoint>
+<style>
+.wrapper {
+  display: inline-block;
+}
+</style>
+
+<div class={`wrapper ${c}`} {style} use:waypoint>
   {#if visible}
     <slot/>
   {:else}
