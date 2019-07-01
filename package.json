@@ -1,11 +1,12 @@
 {
-  "name": "svelte-lazyload",
+  "name": "svelte-waypoint",
   "description": "Lazyload images or anything in Svelte",
   "license": "MIT",
-  "repository": "https://github.com/matyunya/svelte-lazyload",
+  "repository": "https://github.com/matyunya/svelte-waypoint",
   "svelte": "src/components/components.module.js",
   "module": "dist/index.min.mjs",
   "main": "dist/index.min.js",
+  "version": "0.0.1",
   "devDependencies": {
     "@babel/core": "7.4.5",
     "@babel/plugin-syntax-dynamic-import": "7.2.0",

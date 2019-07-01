@@ -26,7 +26,7 @@ function throttleFn(fn, threshhold, scope) {
   };
 }
 
-function lazyload(node) {
+function waypoint(node) {
   if (!window) return;
 
   function checkIsVisible() {
@@ -63,7 +63,7 @@ function lazyload(node) {
 
 </script>
 
-<div use:lazyload>
+<div use:waypoint>
   {#if visible}
     <slot></slot>
   {/if}
