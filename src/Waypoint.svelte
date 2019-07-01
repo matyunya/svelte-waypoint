@@ -65,6 +65,8 @@ function waypoint(node) {
 
 <div use:waypoint>
   {#if visible}
-    <slot></slot>
+    <slot/>
+  {:else}
+    <slot name="loading"/>
   {/if}
 </div>
