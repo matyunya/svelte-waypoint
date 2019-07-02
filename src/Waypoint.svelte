@@ -10,6 +10,7 @@
   export let once = false;
 
   let visible = false;
+  let wasVisible = false;
 
   function throttleFn(fn, threshhold, scope) {
     let last, deferTimer;
@@ -33,12 +34,13 @@
     };
   }
 
-  function callEvents(wasVisible) {
+  function callEvents(wasVisible, observer, node) {
     if (visible && !wasVisible) {
       dispatch('enter');
+      return;
     }
 
-    if (!wasVisible && visible) {
+    if (!wasVisible && !visible) {
       dispatch('leave');
     }
   }
@@ -46,20 +48,21 @@
   function waypoint(node) {
     if (!window) return;
 
-    if (visible && once) {
-      return;
-    }
-
     if (window.IntersectionObserver && window.IntersectionObserverEntry) {
       const observer = new IntersectionObserver(([ { isIntersecting } ]) => {
-        const wasVisible = visible;
+        if (once && visible) {
+          observer.unobserve(node);
+          return;
+        }
+
+        wasVisible = visible;
         visible = isIntersecting;
-        callEvents(wasVisible);
+        callEvents(wasVisible, observer, node);
       });
 
       observer.observe(node);
 
-      return () => observer.destroy();
+      return () => observer.unobserve(node);
     }
 
     function checkIsVisible() {
@@ -82,7 +85,7 @@
       const windowInnerHeight = window.innerHeight
         || document.documentElement.clientHeight;
 
-      const wasVisible = visible;
+      wasVisible = visible;
       visible = (top - offset <= windowInnerHeight) &&
         (top + height + offset >= 0);
 
