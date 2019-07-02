@@ -1,68 +1,86 @@
 <script>
-export let offset = 0;
-export let throttle = 250;
-export let c = '';
-export let style = '';
+  import { createEventDispatcher } from 'svelte';
 
-let visible = false;
+  export let offset = 0;
+  export let throttle = 250;
+  export let c = '';
+  export let style = '';
+  export let once = false;
 
-function throttleFn(fn, threshhold, scope) {
-  let last, deferTimer;
+  let visible = false;
 
-  return function () {
-    let context = scope || this;
+  function throttleFn(fn, threshhold, scope) {
+    let last, deferTimer;
 
-    let now = +new Date,
-        args = arguments;
-    if (last && now < last + threshhold) {
-      // hold on to it
-      clearTimeout(deferTimer);
-      deferTimer = setTimeout(function () {
+    return function () {
+      let context = scope || this;
+
+      let now = +new Date,
+          args = arguments;
+      if (last && now < last + threshhold) {
+        // hold on to it
+        clearTimeout(deferTimer);
+        deferTimer = setTimeout(function () {
+          last = now;
+          fn.apply(context, args);
+        }, threshhold);
+      } else {
         last = now;
         fn.apply(context, args);
-      }, threshhold);
-    } else {
-      last = now;
-      fn.apply(context, args);
-    }
-  };
-}
-
-function waypoint(node) {
-  if (!window) return;
-
-  function checkIsVisible() {
-    // Kudos https://github.com/twobin/react-lazyload/blob/master/src/index.jsx#L93
-    if (!(node.offsetWidth || node.offsetHeight || node.getClientRects().length)) return false;
-
-    let top;
-    let height;
-
-    try {
-      ({ top, height } = node.getBoundingClientRect());
-    } catch (e) {
-      ({ top, height } = defaultBoundingClientRect);
-    }
-
-    const windowInnerHeight = window.innerHeight || document.documentElement.clientHeight;
-
-    visible = (top - offset <= windowInnerHeight) &&
-          (top + height + offset >= 0);
+      }
+    };
   }
 
-  checkIsVisible();
+  function waypoint(node) {
+    if (!window) return;
 
-  const throttled = throttleFn(checkIsVisible, throttle);
+    function checkIsVisible() {
+      if (visible && once) {
+        return;
+      }
 
-  window.addEventListener('scroll', throttled);
-  window.addEventListener('resize', throttled);
+      // Kudos https://github.com/twobin/react-lazyload/blob/master/src/index.jsx#L93
+      if (!(node.offsetWidth || node.offsetHeight || node.getClientRects().length)) return;
 
-  return () => {
-    window.removeEventListener('scroll', throttled);
-    window.removeEventListener('resize', throttled);
-  };
-}
+      let top;
+      let height;
 
+      try {
+        ({ top, height } = node.getBoundingClientRect());
+      } catch (e) {
+        ({ top, height } = defaultBoundingClientRect);
+      }
+
+      const windowInnerHeight = window.innerHeight || document.documentElement.clientHeight;
+
+      const wasVisible = visible;
+
+      visible = (top - offset <= windowInnerHeight) &&
+            (top + height + offset >= 0);
+
+      if (visible && !wasVisible) {
+        dispatch('enter');
+      }
+
+      if (!wasVisible && visible) {
+        dispatch('leave');
+      }
+    }
+
+    checkIsVisible();
+
+    const throttled = throttleFn(checkIsVisible, throttle);
+
+    window.addEventListener('scroll', throttled);
+    window.addEventListener('resize', throttled);
+
+    const removeHandlers = () => {
+      window.removeEventListener('scroll', throttled);
+      window.removeEventListener('resize', throttled);
+    }
+
+    return removeHandlers;
+  }
 </script>
 
 <style>
