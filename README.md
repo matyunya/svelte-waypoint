@@ -29,7 +29,7 @@ npm install svelte-waypoint --save
 ```
 
 ### Options
-- `throttle` *(default: 250)* — Interval in milliseconds at which listener function is fired.
-- `offset` *(0)* — Distance from the top of the element in pixels at which the element will be marked visible.
-- `c` *''* — Classes passed down to waypoint's wrapper (should be unnecessary once components may receive classes)
-- `style` *''* — Same as above but for style prop.
+- `throttle` *(default: 250)* Interval in milliseconds at which listener function is fired.
+- `offset` Distance from the top of the element in pixels at which the element will be marked visible.
+- `c` Classes passed down to waypoint's wrapper (should be unnecessary once components may receive classes)
+- `style` Same as above but for style prop.
