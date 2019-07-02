@@ -1,6 +1,8 @@
 <script>
   import { createEventDispatcher } from 'svelte';
 
+  const dispatch = createEventDispatcher();
+
   export let offset = 0;
   export let throttle = 250;
   export let c = '';
@@ -31,8 +33,33 @@
     };
   }
 
+  function callEvents(wasVisible) {
+    if (visible && !wasVisible) {
+      dispatch('enter');
+    }
+
+    if (!wasVisible && visible) {
+      dispatch('leave');
+    }
+  }
+
   function waypoint(node) {
     if (!window) return;
+
+    if (visible && once) {
+      return;
+    }
+
+    if (window.IntersectionObserver && window.IntersectionObserverEntry) {
+      const observer = new IntersectionObserver(([ { isIntersecting } ]) => {
+        const wasVisible = visible;
+        visible = isIntersecting;
+        callEvents(wasVisible);
+      });
+
+      observer.observe(node);
+      return;
+    }
 
     function checkIsVisible() {
       if (visible && once) {
@@ -51,20 +78,14 @@
         ({ top, height } = defaultBoundingClientRect);
       }
 
-      const windowInnerHeight = window.innerHeight || document.documentElement.clientHeight;
+      const windowInnerHeight = window.innerHeight
+        || document.documentElement.clientHeight;
 
       const wasVisible = visible;
-
       visible = (top - offset <= windowInnerHeight) &&
-            (top + height + offset >= 0);
+        (top + height + offset >= 0);
 
-      if (visible && !wasVisible) {
-        dispatch('enter');
-      }
-
-      if (!wasVisible && visible) {
-        dispatch('leave');
-      }
+      callEvents(wasVisible);
     }
 
     checkIsVisible();
