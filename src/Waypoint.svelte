@@ -58,7 +58,8 @@
       });
 
       observer.observe(node);
-      return;
+
+      return () => observer.destroy();
     }
 
     function checkIsVisible() {
