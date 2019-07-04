@@ -1,5 +1,5 @@
 <script>
-  import { createEventDispatcher } from 'svelte';
+  import { createEventDispatcher, onDestroy, getContext } from 'svelte';
 
   const dispatch = createEventDispatcher();
 
@@ -7,29 +7,29 @@
   export let throttle = 250;
   export let c = '';
   export let style = '';
-  export let once = false;
+  export let once = true;
 
   let visible = false;
   let wasVisible = false;
+  let intersecting = false;
+  let removeHandlers = () => {};
 
-  function throttleFn(fn, threshhold, scope) {
+  function throttleFn(fn, threshhold) {
     let last, deferTimer;
 
-    return function () {
-      let context = scope || this;
+    return () => {
+      const now = +new Date;
 
-      let now = +new Date,
-          args = arguments;
       if (last && now < last + threshhold) {
         // hold on to it
         clearTimeout(deferTimer);
         deferTimer = setTimeout(function () {
           last = now;
-          fn.apply(context, args);
+          fn();
         }, threshhold);
       } else {
         last = now;
-        fn.apply(context, args);
+        fn();
       }
     };
   }
@@ -40,8 +40,12 @@
       return;
     }
 
-    if (!wasVisible && !visible) {
+    if (wasVisible && !intersecting) {
       dispatch('leave');
+    }
+
+    if (once && wasVisible && !intersecting) {
+      removeHandlers();
     }
   }
 
@@ -50,26 +54,20 @@
 
     if (window.IntersectionObserver && window.IntersectionObserverEntry) {
       const observer = new IntersectionObserver(([ { isIntersecting } ]) => {
-        if (once && visible) {
-          observer.unobserve(node);
-          return;
-        }
-
         wasVisible = visible;
-        visible = isIntersecting;
+        visible = once ? true : isIntersecting;
+        intersecting = isIntersecting;
         callEvents(wasVisible, observer, node);
       });
 
       observer.observe(node);
 
-      return () => observer.unobserve(node);
+      removeHandlers = () => observer.unobserve(node);
+
+      return removeHandlers;
     }
 
     function checkIsVisible() {
-      if (visible && once) {
-        return;
-      }
-
       // Kudos https://github.com/twobin/react-lazyload/blob/master/src/index.jsx#L93
       if (!(node.offsetWidth || node.offsetHeight || node.getClientRects().length)) return;
 
@@ -86,20 +84,22 @@
         || document.documentElement.clientHeight;
 
       wasVisible = visible;
-      visible = (top - offset <= windowInnerHeight) &&
+      intersecting = (top - offset <= windowInnerHeight) &&
         (top + height + offset >= 0);
+
+      visible = once ? true : intersecting;
 
       callEvents(wasVisible);
     }
 
     checkIsVisible();
 
-    const throttled = throttleFn(checkIsVisible, throttle);
+    throttled = throttleFn(checkIsVisible, throttle);
 
     window.addEventListener('scroll', throttled);
     window.addEventListener('resize', throttled);
 
-    const removeHandlers = () => {
+    removeHandlers = () => {
       window.removeEventListener('scroll', throttled);
       window.removeEventListener('resize', throttled);
     }
@@ -117,7 +117,5 @@
 <div class={`wrapper ${c}`} {style} use:waypoint>
   {#if visible}
     <slot/>
-  {:else}
-    <slot name="loading"/>
   {/if}
 </div>

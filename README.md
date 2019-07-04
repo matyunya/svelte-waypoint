@@ -33,3 +33,8 @@ npm install svelte-waypoint --save
 - `offset` Distance from the top of the element in pixels at which the element will be marked visible.
 - `c` Classes passed down to waypoint's wrapper (should be unnecessary once components may receive classes)
 - `style` Same as above but for style prop.
+- `once` *(default: true)* If false, component will disappear every time it leaves the viewport.
+
+### Events
+- `on:enter` Callback when component enters the viewport.
+- `on:leave` Callback when component leaves the viewport.
