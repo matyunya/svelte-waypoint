@@ -55,7 +55,7 @@
     if (window.IntersectionObserver && window.IntersectionObserverEntry) {
       const observer = new IntersectionObserver(([ { isIntersecting } ]) => {
         wasVisible = visible;
-        visible = once ? true : isIntersecting;
+        visible = isIntersecting;
         intersecting = isIntersecting;
         callEvents(wasVisible, observer, node);
       });
@@ -87,7 +87,7 @@
       intersecting = (top - offset <= windowInnerHeight) &&
         (top + height + offset >= 0);
 
-      visible = once ? true : intersecting;
+      visible = intersecting;
 
       callEvents(wasVisible);
     }
