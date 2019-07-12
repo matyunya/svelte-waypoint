@@ -6,7 +6,7 @@
   "svelte": "src/Waypoint.svelte",
   "module": "dist/index.min.mjs",
   "main": "dist/index.min.js",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "devDependencies": {
     "@babel/core": "7.4.5",
     "@babel/plugin-syntax-dynamic-import": "7.2.0",
