@@ -34,6 +34,8 @@ npm install svelte-waypoint --save
 - `c` Classes passed down to waypoint's wrapper (should be unnecessary once components may receive classes)
 - `style` Same as above but for style prop.
 - `once` *(default: true)* If false, component will disappear every time it leaves the viewport.
+- `threshold` *(default: 0)* "A threshold of 1.0 means that when 100% of the target is visible within the element specified by the root option, the callback is invoked."
+Currently works only IE11+.
 
 ### Events
 - `on:enter` Callback when component enters the viewport.

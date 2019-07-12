@@ -8,25 +8,26 @@
   export let c = '';
   export let style = '';
   export let once = true;
+  export let threshold = 1.0;
 
   let visible = false;
   let wasVisible = false;
   let intersecting = false;
   let removeHandlers = () => {};
 
-  function throttleFn(fn, threshhold) {
+  function throttleFn(fn, time) {
     let last, deferTimer;
 
     return () => {
       const now = +new Date;
 
-      if (last && now < last + threshhold) {
+      if (last && now < last + time) {
         // hold on to it
         clearTimeout(deferTimer);
         deferTimer = setTimeout(function () {
           last = now;
           fn();
-        }, threshhold);
+        }, time);
       } else {
         last = now;
         fn();
@@ -66,6 +67,9 @@
         visible = isIntersecting;
 
         callEvents(wasVisible, observer, node);
+      }, {
+        rootMargin: offset + 'px',
+        threshold,
       });
 
       observer.observe(node);
