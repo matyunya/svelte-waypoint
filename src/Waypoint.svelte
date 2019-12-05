@@ -111,7 +111,7 @@
 
     checkIsVisible();
 
-    throttled = throttleFn(checkIsVisible, throttle);
+    const throttled = throttleFn(checkIsVisible, throttle);
 
     window.addEventListener('scroll', throttled);
     window.addEventListener('resize', throttled);
