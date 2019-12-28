@@ -3636,10 +3636,10 @@ svelte-preprocess@2.14.1:
     postcss-load-config "^2.0.0"
     strip-indent "^2.0.0"
 
-svelte@3.6.2:
-  version "3.6.2"
-  resolved "https://registry.yarnpkg.com/svelte/-/svelte-3.6.2.tgz#2eb8d58498b0c45739c8627d1f67ebc902f99f2c"
-  integrity sha512-OzKC7mzHkEXbCxe3+NsHty2NShtFjYDDmJhgmMprXjaCBoTm03lrGUQz0moJxD89+u7iSCUz7GqOT6NE7PgkXA==
+svelte@3.16.7:
+  version "3.16.7"
+  resolved "https://registry.yarnpkg.com/svelte/-/svelte-3.16.7.tgz#9ade80a4bbbac95595c676dd817222f632fa2c07"
+  integrity sha512-egrva1UklB1n7KAv179IhDpQzMGAvubJUlOQ9PitmmZmAfrCUEgrQnx2vPxn2s+mGV3aYegXvJ/yQ35N2SfnYQ==
 
 symbol-observable@^1.1.0:
   version "1.2.0"
