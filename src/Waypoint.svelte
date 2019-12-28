@@ -9,8 +9,12 @@
   export let style = '';
   export let once = true;
   export let threshold = 1.0;
+  export let disabled = false;
 
-  let visible = false;
+  let className = "";
+  export { className as class };
+
+  let visible = disabled;
   let wasVisible = false;
   let intersecting = false;
   let removeHandlers = () => {};
@@ -51,7 +55,7 @@
   }
 
   function waypoint(node) {
-    if (!window) return;
+    if (!window || disabled) return;
 
     if (window.IntersectionObserver && window.IntersectionObserverEntry) {
       const observer = new IntersectionObserver(([ { isIntersecting } ]) => {
@@ -131,8 +135,8 @@
 }
 </style>
 
-<div class={`wrapper ${c}`} {style} use:waypoint>
+<div class="wrapper {className} {c}" {style} use:waypoint>
   {#if visible}
-    <slot/>
+    <slot />
   {/if}
 </div>
